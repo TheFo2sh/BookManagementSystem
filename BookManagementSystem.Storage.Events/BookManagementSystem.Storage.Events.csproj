@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AsyncEnumerator" Version="4.0.2" />
+    <PackageReference Include="EventStore.Client" Version="21.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BookManagementSystem.Infrastructure.Domain\BookManagementSystem.Infrastructure.Domain.csproj" />
+    <ProjectReference Include="..\BookManamgement.AsyncStreams\BookManamgement.AsyncStreams.csproj" />
+  </ItemGroup>
+
+</Project>
