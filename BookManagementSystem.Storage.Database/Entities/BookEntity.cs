@@ -8,7 +8,7 @@ namespace BookManagementSystem.Storage.Database.Entities
         public string Description { get; set; }
 
         public int? CategoryId { get; set; }
-        public virtual CategoryEntity Category { get; set; }
+        public virtual CategoryEntity Category { get; set; } = new ();
         public virtual ICollection<AuthorEntity> Authors { get; set; }
 
         public override void CopyTo(BaseEntity<string> destination)

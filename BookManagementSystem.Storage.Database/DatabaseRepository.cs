@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using BookManagementSystem.Storage.Database.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -18,9 +19,10 @@ namespace BookManagementSystem.Storage.Database
             this.dbSet = context.Set<T>();
         }
 
-        public virtual async Task<IEnumerable<T>> All()
+       
+        public virtual IQueryable<T> All()
         {
-            return await dbSet.ToListAsync();
+            return  dbSet.AsQueryable();
         }
 
         public virtual async Task<T> GetById(TKey id)
