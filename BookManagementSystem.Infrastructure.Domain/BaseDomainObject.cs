@@ -30,7 +30,7 @@ namespace BookManagementSystem.Infrastructure.Domain
             return StateStore.TryPeek(out TState oldState) ? oldState : default;
         }
 
-        protected async Task Apply(object evt)
+        internal async Task Apply(object evt)
         {
             var method = typeof(TEventsHandler).GetMethod("Handle", new[] { evt.GetType(), typeof(TState), typeof(CancellationToken) });
             
@@ -60,14 +60,6 @@ namespace BookManagementSystem.Infrastructure.Domain
             return Position;
         }
 
-        public async Task Rehydrate()
-        {
-            var events = _eventsRepository.GetEvents(this.GetType().Name, AggregateId);
-            if (events == null)
-                return;
-            await events.ForEachAsync(async evt => await Apply(await evt));
-
-        }
         protected async Task<long> ApplyAndCommitAsync<T>(T evt)
         {
             await Apply(evt);
