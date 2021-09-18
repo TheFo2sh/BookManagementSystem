@@ -7,7 +7,7 @@ using Dasync.Collections;
 
 namespace BookManagementSystem.Infrastructure.Domain
 {
-    public class DomainObjectRepository<T, TEventsHandler, TState> where T:BaseDomainObject<TEventsHandler, TState>, new() where TEventsHandler : new()
+    public class DomainObjectRepository<T, TEventsHandler, TState> where T:BaseDomainObject<TEventsHandler, TState> where TEventsHandler : new()
     {
         private readonly IEventsRepository _eventsRepository;
 
