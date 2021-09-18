@@ -6,6 +6,7 @@ using Autofac;
 using BookManagementSystem.Domain.Book;
 using BookManagementSystem.Factories;
 using BookManagementSystem.Infrastructure.Domain;
+using BookManagementSystem.Storage.Database;
 using BookManagementSystem.Storage.Events;
 using EventStore.ClientAPI;
 using MediatR;
@@ -13,6 +14,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -31,6 +33,7 @@ namespace BookManagementSystem
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<ApplicationDbContext>(options=>options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddControllersWithViews();
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
@@ -45,6 +48,11 @@ namespace BookManagementSystem
             builder.RegisterType<EventsRepository>().AsImplementedInterfaces().AsSelf();
             builder.RegisterType<BookCommandsHandler>().AsImplementedInterfaces();
             builder.RegisterType<Mediator>().As<IMediator>().InstancePerLifetimeScope();
+            
+            builder.RegisterType<ApplicationDbContext>().AsSelf().AsImplementedInterfaces().InstancePerLifetimeScope();
+            builder.RegisterType<UnitOfWork>().AsSelf().AsImplementedInterfaces().InstancePerLifetimeScope();
+            builder.RegisterGeneric(typeof(DatabaseRepository<,>)).As(typeof(IDatabaseRepository<,>));
+
 
             builder.Register<ServiceFactory>(context =>
             {

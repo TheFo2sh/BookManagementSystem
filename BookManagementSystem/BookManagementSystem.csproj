@@ -17,6 +17,11 @@
     <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="7.1.0" />
     <PackageReference Include="EventStore.Client" Version="21.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="3.1.8" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.10">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.10" />
   </ItemGroup>
 
   <ItemGroup>
@@ -28,6 +33,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BookManagementSystem.Domain\BookManagementSystem.Domain.csproj" />
+    <ProjectReference Include="..\BookManagementSystem.Storage.Database\BookManagementSystem.Storage.Database.csproj" />
     <ProjectReference Include="..\BookManagementSystem.Storage.Events\BookManagementSystem.Storage.Events.csproj" />
   </ItemGroup>
 
