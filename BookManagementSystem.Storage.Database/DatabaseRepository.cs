@@ -11,15 +11,10 @@ namespace BookManagementSystem.Storage.Database
     {
         protected ApplicationDbContext _context;
         protected DbSet<T> dbSet;
-        protected readonly ILogger _logger;
 
-        public DatabaseRepository(
-            ApplicationDbContext context,
-            ILogger logger
-        )
+        public DatabaseRepository(ApplicationDbContext context)
         {
             _context = context;
-            _logger = logger;
             this.dbSet = context.Set<T>();
         }
 
@@ -48,9 +43,9 @@ namespace BookManagementSystem.Storage.Database
             return true;
         }
 
-        public virtual async Task<bool> Upsert(T entity)
+        public virtual async Task<bool> Upsert(string id,T entity)
         {
-            var result = await dbSet.FindAsync(entity.Id);
+            var result = await dbSet.FindAsync(id);
             if (result == null)
                 return await Add(entity);
             

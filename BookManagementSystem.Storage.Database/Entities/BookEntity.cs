@@ -7,7 +7,7 @@ namespace BookManagementSystem.Storage.Database.Entities
         public string Title { get; set; }
         public string Description { get; set; }
 
-        public int CategoryId { get; set; }
+        public int? CategoryId { get; set; }
         public virtual CategoryEntity Category { get; set; }
         public virtual ICollection<AuthorEntity> Authors { get; set; }
 

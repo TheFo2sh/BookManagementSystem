@@ -10,6 +10,6 @@ namespace BookManagementSystem.Storage.Database
         Task<T> GetById(TKey id);
         Task<bool> Add(T entity);
         Task<bool> Delete(TKey id);
-        Task<bool> Upsert(T entity);
+        Task<bool> Upsert(string id, T entity);
     }
 }

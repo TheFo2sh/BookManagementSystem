@@ -5,6 +5,6 @@ namespace BookManagementSystem.Domain.Book
     public record BookState(string Id,
                             string Title = default,
                             string Description = default,
-                            int CategoryId = default,
+                            int? CategoryId = default,
                             ImmutableList<int> AuthorsId = default);
 }

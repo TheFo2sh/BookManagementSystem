@@ -6,6 +6,7 @@ using Autofac;
 using BookManagementSystem.Domain.Book;
 using BookManagementSystem.Factories;
 using BookManagementSystem.Infrastructure.Domain;
+using BookManagementSystem.Services;
 using BookManagementSystem.Storage.Database;
 using BookManagementSystem.Storage.Events;
 using EventStore.ClientAPI;
@@ -47,10 +48,10 @@ namespace BookManagementSystem
             builder.RegisterGeneric(typeof(DomainObjectRepository<,,>)).AsSelf();
             builder.RegisterType<EventsRepository>().AsImplementedInterfaces().AsSelf();
             builder.RegisterType<BookCommandsHandler>().AsImplementedInterfaces();
+            builder.RegisterType<ReadModelUpdateService>().AsImplementedInterfaces();
             builder.RegisterType<Mediator>().As<IMediator>().InstancePerLifetimeScope();
-            
-            builder.RegisterType<ApplicationDbContext>().AsSelf().AsImplementedInterfaces().InstancePerLifetimeScope();
-            builder.RegisterType<UnitOfWork>().AsSelf().AsImplementedInterfaces().InstancePerLifetimeScope();
+            builder.RegisterType<ApplicationDbContext>().AsSelf().AsImplementedInterfaces().SingleInstance();
+            builder.RegisterType<UnitOfWork>().AsSelf().AsImplementedInterfaces().SingleInstance();
             builder.RegisterGeneric(typeof(DatabaseRepository<,>)).As(typeof(IDatabaseRepository<,>));
 
 

@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Threading;
 using System.Threading.Tasks;
 using Dasync.Collections;
+using MediatR;
 
 namespace BookManagementSystem.Infrastructure.Domain
 {
@@ -12,12 +13,13 @@ namespace BookManagementSystem.Infrastructure.Domain
         private readonly TEventsHandler _handler;
        
         protected ConcurrentStack<TState> StateStore;
-        
+        protected IMediator Mediator;
         public string AggregateId { get; }
         public long Position { get; private set; }
 
-        protected BaseDomainObject(string aggregateId, TState state, IEventsRepository eventsRepository)
+        protected BaseDomainObject(string aggregateId, TState state, IEventsRepository eventsRepository,IMediator mediator)
         {
+            Mediator = mediator;
             _eventsRepository = eventsRepository;
             _handler = new TEventsHandler();
             StateStore = new ConcurrentStack<TState>(new[] { state });
