@@ -5,6 +5,10 @@ VisualStudioVersion = 16.0.30717.126
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookManagementSystem", "BookManagementSystem\BookManagementSystem.csproj", "{783E1B6A-3539-4C32-910C-5188904F5520}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BookManagementSystem.Infrastructure", "BookManagementSystem.Infrastructure", "{DC4228C0-112B-4810-B80A-C82B7492065D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookManagementSystem.Infrastructure.Domain", "BookManagementSystem.Infrastructure.Domain\BookManagementSystem.Infrastructure.Domain.csproj", "{DE43AE5E-2E5B-4631-9AF5-933B8C26A3F6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,9 +19,16 @@ Global
 		{783E1B6A-3539-4C32-910C-5188904F5520}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{783E1B6A-3539-4C32-910C-5188904F5520}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{783E1B6A-3539-4C32-910C-5188904F5520}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DE43AE5E-2E5B-4631-9AF5-933B8C26A3F6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DE43AE5E-2E5B-4631-9AF5-933B8C26A3F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DE43AE5E-2E5B-4631-9AF5-933B8C26A3F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DE43AE5E-2E5B-4631-9AF5-933B8C26A3F6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{DE43AE5E-2E5B-4631-9AF5-933B8C26A3F6} = {DC4228C0-112B-4810-B80A-C82B7492065D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A5D067F2-D7CB-4BE1-9FD9-2B7F565335E5}
