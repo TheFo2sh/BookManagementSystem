@@ -55,7 +55,7 @@ namespace BookManagementSystem.Infrastructure.Domain
             Position = await _eventsRepository.CommitAsync(this.GetType().Name, AggregateId, evt);
             var currentState = GetCurrentState();
             StateStore = new ConcurrentStack<TState>(new[] { currentState });
-            OnStateCommited(currentState, Position);
+            OnEventsCommitted(currentState, Position);
 
             return Position;
         }
@@ -89,7 +89,7 @@ namespace BookManagementSystem.Infrastructure.Domain
                 StateStore.TryPop(out _);
         }
 
-        protected virtual void OnStateCommited(TState state, long position)
+        protected virtual void OnEventsCommitted(TState state, long position)
         {
         }
 
