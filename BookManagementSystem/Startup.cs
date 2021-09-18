@@ -1,3 +1,14 @@
+using System;
+using System.Linq;
+using System.Net;
+using System.Reflection;
+using Autofac;
+using BookManagementSystem.Domain.Book;
+using BookManagementSystem.Factories;
+using BookManagementSystem.Infrastructure.Domain;
+using BookManagementSystem.Storage.Events;
+using EventStore.ClientAPI;
+using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -27,6 +38,23 @@ namespace BookManagementSystem
                 configuration.RootPath = "ClientApp/dist";
             });
         }
+        public void ConfigureContainer(ContainerBuilder builder)
+        {
+            builder.Register(ctx => EventStoreConnectionFactory.Create()).As<IEventStoreConnection>().SingleInstance().AsSelf();
+            builder.RegisterGeneric(typeof(DomainObjectRepository<,,>)).AsSelf();
+            builder.RegisterType<EventsRepository>().AsImplementedInterfaces().AsSelf();
+            builder.RegisterType<BookCommandsHandler>().AsImplementedInterfaces();
+            builder.RegisterType<Mediator>().As<IMediator>().InstancePerLifetimeScope();
+
+            builder.Register<ServiceFactory>(context =>
+            {
+                var c = context.Resolve<IComponentContext>();
+                return t => c.Resolve(t);
+            });
+
+        }
+
+
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -50,7 +78,7 @@ namespace BookManagementSystem
             }
 
             app.UseRouting();
-
+            
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(

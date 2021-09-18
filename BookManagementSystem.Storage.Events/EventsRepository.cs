@@ -43,8 +43,11 @@ namespace BookManagementSystem.Storage.Events
 
         public async Task<long> CommitAsync(string aggregatetype, string aggregateId, object evt)
         {
-            var eventData = new EventData(Guid.NewGuid(), evt.GetType().FullName, true, JsonSerializer.SerializeToUtf8Bytes(evt), null);
+            var eventType = evt.GetType();
+            var eventData = new EventData(Guid.NewGuid(), $"{eventType.FullName}, {eventType.Assembly.FullName}", true, JsonSerializer.SerializeToUtf8Bytes(evt), null);
+           
             var result = await _eventStoreConnection.AppendToStreamAsync($"{aggregatetype}_{aggregateId}", ExpectedVersion.Any, eventData);
+            
             return result.LogPosition.CommitPosition;
         }
     }

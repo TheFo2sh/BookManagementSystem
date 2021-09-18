@@ -12,8 +12,4 @@
     <ProjectReference Include="..\BookManagementSystem.Infrastructure.Domain\BookManagementSystem.Infrastructure.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="CommandHandlers\" />
-  </ItemGroup>
-
 </Project>

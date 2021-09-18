@@ -20,7 +20,11 @@ namespace BookManagementSystem.Infrastructure.Domain
         {
             var aggregate = (T) Activator.CreateInstance(typeof(T), aggregateId, _eventsRepository);
             var events = _eventsRepository.GetEvents(typeof(T).Name, aggregateId);
-            await events.ForEachAsync(evt => aggregate.Apply(evt));
+            await events.ForEachAsync(async evt =>
+            {
+                var e = await evt;
+                await aggregate.Apply(e);
+            });
             return aggregate;
         }
     }
