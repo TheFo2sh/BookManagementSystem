@@ -1,4 +1,18 @@
 <h1>Hello, world!</h1>
 <div>
-  <ngx-datatable [rows]="rows" [columns]="columns" class="material"> </ngx-datatable>
+  <ngx-datatable 
+  [rows]="rows" 
+  [columns]="columns" 
+  [rows]="rows"
+  [columns]="columns"
+  [columnMode]="'force'"
+  [headerHeight]="50"
+  [footerHeight]="50"
+  [rowHeight]="'auto'"
+  [externalPaging]="true"
+  [count]="page.count"
+  [offset]="page.offset"
+  [limit]="page.limit"
+  (page)="pageCallback($event)"
+  class="material table table-striped"> </ngx-datatable>
 </div>
