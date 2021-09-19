@@ -30,9 +30,9 @@ namespace BookManagementSystem.Storage.Events
             return await JsonSerializer.DeserializeAsync(memoryStream, type);
         }
 
-        public IAsyncEnumerable<Task<object>> GetEvents<T>(string aggregateId,long? pageNumber, int? pageSize, string eventName = null)
+        public IAsyncEnumerable<Task<object>> GetEvents<T>(string aggregateId,long? pageNumber, int? pageSize, Func<EventMetaData, bool> filter = null)
         {
-            return GetEvents(typeof(T).Name, aggregateId, pageNumber,pageSize,eventName);
+            return GetEvents(typeof(T).Name, aggregateId, pageNumber,pageSize,filter);
         }
 
         public IAsyncEnumerable<Task<object>> GetEvents(string aggregatetype, string aggregateId)
@@ -40,8 +40,7 @@ namespace BookManagementSystem.Storage.Events
             return GetEvents(aggregatetype, aggregateId, null,null);
         }
 
-        public IAsyncEnumerable<Task<object>> GetEvents(string aggregatetype, string aggregateId, long? page,
-            int? pageSize, string eventName = null)
+        public IAsyncEnumerable<Task<object>> GetEvents(string aggregatetype, string aggregateId, long? page, int? pageSize, Func<EventMetaData, bool> filter = null)
         {
             Task<StreamEventsSlice> LoadEvents(long start, int count) =>
                 _eventStoreConnection.ReadStreamEventsForwardAsync($"{aggregatetype}_{aggregateId}", start, count,
@@ -50,17 +49,14 @@ namespace BookManagementSystem.Storage.Events
             bool IsEnd(long index, StreamEventsSlice slice) =>
                 slice.IsEndOfStream || (page.HasValue && index >= page * pageSize);
 
-            IAsyncEnumerable<StreamEventsSlice> slices = EnumerableFactory
+            var slices = EnumerableFactory
                 .Create(LoadEvents, IsEnd,
                     page.GetValueOrDefault(0), pageSize.GetValueOrDefault(10));
            
             var events = slices.SelectMany(slice => slice.Events).Select(x => x.Event);
-            if (!string.IsNullOrEmpty(eventName))
+            if (filter!=null)
             {
-                events = events.Where(ev =>
-                {
-                    return ev.EventType.Contains(eventName);
-                });
+                events = events.Where(e=>filter(new EventMetaData(e.EventType,e.Created)));
             }
 
             return events.Select(Parse);

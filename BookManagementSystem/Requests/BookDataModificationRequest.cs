@@ -10,4 +10,5 @@ namespace BookManagementSystem.Requests
     public record ChangeCategory(int CategoryId);
     public record ModifyAuthor(int AuthorId);
 
+    public record EventsFilter(string Type=null, DateTime? FromDate=null, DateTime? ToDate=null);
 }

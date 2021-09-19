@@ -75,15 +75,37 @@ namespace BookManagementSystem.Controllers
 
         [HttpGet]
         [Route("{id}/events")]
-        public async IAsyncEnumerable<EventViewModel> GetEvents(string id, long? page, int? pageSize,string filter=null)
+        public async IAsyncEnumerable<EventViewModel> GetEvents(string id, long? page, int? pageSize,[FromQuery] EventsFilter filter =null)
         {
-            var list = await _eventsRepository.GetEvents<BookAggregate>(id,page, pageSize, filter).ToListAsync();
+            bool FilterEvents(EventMetaData eventMetaData)
+            {
+                var isvalid = true;
+                
+                if (filter == null)
+                    return true;
+                
+                if (!string.IsNullOrEmpty(filter.Type))
+                    isvalid =  eventMetaData.Type.Contains(filter.Type);
+
+                if (filter.FromDate.HasValue)
+                    isvalid = isvalid && eventMetaData.CreateTime.Date >= filter.FromDate.GetValueOrDefault().Date;
+
+                if (filter.ToDate.HasValue)
+                    isvalid = isvalid && eventMetaData.CreateTime.Date <= filter.ToDate.GetValueOrDefault().Date;
+
+                return isvalid;
+
+            }
+
+            var list = await _eventsRepository.GetEvents<BookAggregate>(id,page, pageSize, FilterEvents).ToListAsync();
             foreach (var item in list)
             {
                 var evt = await item;
                 yield return new EventViewModel() { Args = evt , Event = evt.GetType().Name};
             }
         }
+
+       
 
         [HttpPut]
         [Route("{id}/Title")]
