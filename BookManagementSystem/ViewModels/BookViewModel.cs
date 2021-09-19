@@ -5,6 +5,12 @@ using System.Threading.Tasks;
 
 namespace BookManagementSystem.ViewModels
 {
+    public class EventViewModel
+    {
+        public string Event { get; set; }
+
+        public object Args { get; set; }
+    }
     public class BookViewModel
     {
         public string Id { get; set; }

@@ -8,9 +8,9 @@ namespace BookManamgement.AsyncStreams
 {
     public static class EnumerableFactory
     {
-        public static  IAsyncEnumerable<T> Create<T>(Func<long, int, Task<T>> generator, Func<T, bool> isEnd, long startPage)
+        public static  IAsyncEnumerable<T> Create<T>(Func<long, int, Task<T>> generator, Func<long,T, bool> isEnd, long startPage,int pageSize)
         {
-            return new PagingEnumerable<T>(generator, isEnd, startPage);
+            return new PagingEnumerable<T>(generator, isEnd, startPage, pageSize);
         }
     }
 }

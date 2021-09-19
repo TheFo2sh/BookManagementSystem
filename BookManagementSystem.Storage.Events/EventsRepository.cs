@@ -10,7 +10,7 @@ using EventStore.ClientAPI;
 
 namespace BookManagementSystem.Storage.Events
 {
-   public class EventsRepository : IEventsRepository
+    public class EventsRepository : IEventsRepository
     {
         private IEventStoreConnection _eventStoreConnection;
 
@@ -19,7 +19,7 @@ namespace BookManagementSystem.Storage.Events
             _eventStoreConnection = eventStoreConnection;
         }
 
-      
+
         private async Task<object> Parse(RecordedEvent evt)
         {
             await using var memoryStream = new MemoryStream(evt.Data);
@@ -29,11 +29,26 @@ namespace BookManagementSystem.Storage.Events
             return await JsonSerializer.DeserializeAsync(memoryStream, type);
         }
 
+        public IAsyncEnumerable<Task<object>> GetEvents<T>(string aggregateId,long pageNumber=0, int pageSize=10)
+        {
+            return GetEvents(typeof(T).Name, aggregateId, pageNumber,pageSize);
+        }
+
         public IAsyncEnumerable<Task<object>> GetEvents(string aggregatetype, string aggregateId)
         {
-            Task<StreamEventsSlice> LoadEvents(long start, int count) => _eventStoreConnection.ReadStreamEventsForwardAsync($"{aggregatetype}_{aggregateId}", start, count, false);
+            return GetEvents(aggregatetype, aggregateId, 0,10);
+        }
 
-            var slices = EnumerableFactory.Create(LoadEvents, slice => slice.IsEndOfStream, 0);
+        public IAsyncEnumerable<Task<object>> GetEvents(string aggregatetype, string aggregateId, long? page,int? pageSize)
+        {
+            Task<StreamEventsSlice> LoadEvents(long start, int count) =>
+                _eventStoreConnection.ReadStreamEventsForwardAsync($"{aggregatetype}_{aggregateId}", start, count,
+                    false);
+
+            bool IsEnd(long index, StreamEventsSlice slice) =>
+                slice.IsEndOfStream || (page.HasValue && index >= page * pageSize);
+
+            var slices = EnumerableFactory.Create(LoadEvents, IsEnd, page.GetValueOrDefault(0),pageSize.GetValueOrDefault(10));
 
             var events = slices.SelectMany(slice => slice.Events).Select(x => x.Event).Select(Parse);
 

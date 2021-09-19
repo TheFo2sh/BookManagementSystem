@@ -11,6 +11,7 @@ using BookManagementSystem.Requests;
 using BookManagementSystem.Storage.Database;
 using BookManagementSystem.Storage.Database.Entities;
 using BookManagementSystem.ViewModels;
+using Dasync.Collections;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
@@ -23,14 +24,15 @@ namespace BookManagementSystem.Controllers
     public class BooksController : ControllerBase
     {
         private readonly IDatabaseRepository<BookEntity,string> _repository;
-
+        private readonly IEventsRepository _eventsRepository;
         private readonly ILogger<BooksController> _logger;
         private readonly IMediator _mediator;
-        public BooksController(ILogger<BooksController> logger, IMediator mediator, IDatabaseRepository<BookEntity, string> repository)
+        public BooksController(ILogger<BooksController> logger, IMediator mediator, IDatabaseRepository<BookEntity, string> repository, IEventsRepository eventsRepository)
         {
             _logger = logger;
             _mediator = mediator;
             _repository = repository;
+            _eventsRepository = eventsRepository;
         }
 
         [HttpGet]
@@ -70,6 +72,19 @@ namespace BookManagementSystem.Controllers
             }).ToListAsync();
             return bookViewModel;
         }
+
+        [HttpGet]
+        [Route("{id}/events")]
+        public async IAsyncEnumerable<EventViewModel> GetEvents(string id, long page, int pageSize)
+        {
+            var list = await _eventsRepository.GetEvents<BookAggregate>(id,page, pageSize).ToListAsync();
+            foreach (var item in list)
+            {
+                var evt = await item;
+                yield return new EventViewModel() { Args = evt , Event = evt.GetType().Name};
+            }
+        }
+
         [HttpPut]
         [Route("{id}/Title")]
         public async Task ChangeTitle(string id, ChangeTitle request)

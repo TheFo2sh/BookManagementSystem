@@ -5,6 +5,8 @@ namespace BookManagementSystem.Infrastructure.Domain
 {
     public interface IEventsRepository
     {
+        IAsyncEnumerable<Task<object>> GetEvents<T>( string aggregateId, long pageNumber = 0,int pageSize=10);
+
         IAsyncEnumerable<Task<object>> GetEvents(string aggregateType, string aggregateId);
         Task<long> CommitAsync(string aggregateType, string aggregateId, object evt);
     }
