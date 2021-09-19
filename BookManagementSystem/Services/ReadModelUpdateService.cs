@@ -38,8 +38,7 @@ namespace BookManagementSystem.Services
             if (notification.State.CategoryId.HasValue)
                 bookEntity.Category =await _categoryRepository.GetById(notification.State.CategoryId.GetValueOrDefault());
            
-            bookEntity.Authors = (await Task.WhenAll(
-                notification.State.AuthorsId.Select(async id => await _authorsRepository.GetById(id)))).ToList();
+            bookEntity.Authors = (await Task.WhenAll(notification.State.AuthorsId.Select(async id => await _authorsRepository.GetById(id)))).ToList();
            
             await _booksRepository.Upsert(notification.State.Id, bookEntity);
             await _unitOfWork.CompleteAsync();
