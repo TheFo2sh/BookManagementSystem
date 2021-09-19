@@ -27,6 +27,25 @@ namespace BookManagementSystem.Services
 
         public async Task Handle(BookStateChangedNotification notification, CancellationToken cancellationToken)
         {
+            var bookEntityAuthors =
+                (await Task.WhenAll(
+                    notification.State.AuthorsId.Select(async id => await _authorsRepository.GetById(id)))).ToList();
+
+            var oldBook = await _booksRepository.GetById(notification.State.Id);
+            if (oldBook != null)
+            {
+                await UpdateBook(notification, oldBook);
+            }
+            else
+            {
+                await AddBook(notification, bookEntityAuthors);
+            }
+
+            await _unitOfWork.CompleteAsync();
+        }
+
+        private async Task AddBook(BookStateChangedNotification notification, List<AuthorEntity> bookEntityAuthors)
+        {
             var bookEntity = new BookEntity()
             {
                 Id = notification.State.Id,
@@ -34,14 +53,32 @@ namespace BookManagementSystem.Services
                 Description = notification.State.Description,
                 CategoryId = notification.State.CategoryId,
             };
-          
+
             if (notification.State.CategoryId.HasValue)
-                bookEntity.Category =await _categoryRepository.GetById(notification.State.CategoryId.GetValueOrDefault());
-           
-            bookEntity.Authors = (await Task.WhenAll(notification.State.AuthorsId.Select(async id => await _authorsRepository.GetById(id)))).ToList();
-           
-            await _booksRepository.Upsert(notification.State.Id, bookEntity);
-            await _unitOfWork.CompleteAsync();
+                bookEntity.Category =
+                    await _categoryRepository.GetById(notification.State.CategoryId.GetValueOrDefault());
+
+            bookEntity.Authors = bookEntityAuthors;
+
+            await _booksRepository.Add(bookEntity);
+        }
+
+        private async Task UpdateBook(BookStateChangedNotification notification, BookEntity oldBook)
+        {
+            oldBook.Title = notification.State.Title;
+            oldBook.Description = notification.State.Description;
+            oldBook.CategoryId = notification.State.CategoryId;
+
+            if (notification.State.CategoryId.HasValue)
+                oldBook.Category = await _categoryRepository.GetById(notification.State.CategoryId.GetValueOrDefault());
+
+            foreach (var aurhorId in notification.State.AuthorsId)
+            {
+                if (!oldBook.Authors.Any(author => author.Id == aurhorId))
+                    oldBook.Authors.Add(new AuthorEntity() { Id = aurhorId });
+            }
+
+            _booksRepository.Update(oldBook);
         }
     }
 }

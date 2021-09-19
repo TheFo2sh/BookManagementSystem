@@ -36,6 +36,11 @@ namespace BookManagementSystem.Storage.Database
             return true;
         }
 
+        public void Update(T entity)
+        {
+            dbSet.Update(entity);
+        }
+
         public virtual async Task<bool> Delete(TKey id)
         {
             var entity = await dbSet.FindAsync(id);
@@ -45,16 +50,7 @@ namespace BookManagementSystem.Storage.Database
             return true;
         }
 
-        public virtual async Task<bool> Upsert(string id,T entity)
-        {
-            var result = await dbSet.FindAsync(id);
-            if (result == null)
-                return await Add(entity);
-            
-            entity.CopyTo(result);
-            
-            return true;
-        }
+    
 
         public async Task<int> Count()
         {

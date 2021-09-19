@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace BookManagementSystem.Storage.Database.Entities
 {
@@ -11,13 +12,6 @@ namespace BookManagementSystem.Storage.Database.Entities
         public virtual CategoryEntity Category { get; set; } = new ();
         public virtual ICollection<AuthorEntity> Authors { get; set; }
 
-        public override void CopyTo(BaseEntity<string> destination)
-        {
-            var dest = (BookEntity)destination;
-            dest.Title = Title;
-            dest.Description = Description;
-            dest.CategoryId = CategoryId;
-            dest.Authors = Authors;
-        }
+       
     }
 }

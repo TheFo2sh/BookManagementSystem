@@ -4,6 +4,5 @@
     {
         public TKey Id { get; set; }
 
-        public virtual void CopyTo(BaseEntity<TKey> destination){}
     }
 }

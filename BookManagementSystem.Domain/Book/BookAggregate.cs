@@ -21,7 +21,7 @@ namespace BookManagementSystem.Domain.Book
         public async Task ChangeDescription(string description, EventsTransaction transaction = null)
         {
             var testEvent = new BookEvents.ChangeDescription(description, DateTime.Now);
-            await Apply(testEvent, transaction);
+            await Apply<BookEvents.ChangeDescription>(testEvent, transaction);
         }
         public async Task ChangeCategory(int category, EventsTransaction transaction = null)
         {
@@ -31,7 +31,7 @@ namespace BookManagementSystem.Domain.Book
         public async Task AddAuthor(int authorId, EventsTransaction transaction = null)
         {
             var testEvent = new BookEvents.AddAuthor(authorId, DateTime.Now);
-            await Apply(testEvent, transaction);
+            await Apply<BookEvents.AddAuthor>(testEvent, transaction);
         }
 
         public async Task RemoveAuthor(int authorId, EventsTransaction transaction = null)

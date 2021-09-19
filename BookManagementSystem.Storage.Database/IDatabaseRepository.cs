@@ -10,8 +10,8 @@ namespace BookManagementSystem.Storage.Database
         IQueryable<T> All();
         Task<T> GetById(TKey id);
         Task<bool> Add(T entity);
+        void Update(T entity);
         Task<bool> Delete(TKey id);
-        Task<bool> Upsert(string id, T entity);
         Task<int> Count();
 
     }
