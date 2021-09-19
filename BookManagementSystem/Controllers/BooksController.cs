@@ -50,7 +50,20 @@ namespace BookManagementSystem.Controllers
             };
             return bookViewModel;
         }
-        
+
+        [HttpPost]
+        [Route("")]
+        public async Task<string> Create(CreateBookViewModel bookViewModel)
+        {
+            var id = await _repository.Count()+1;
+
+            await _mediator.Send(new CreateBookCommand(id.ToString(), bookViewModel.Title,
+                bookViewModel.Description, bookViewModel.Category, bookViewModel.Authors));
+            
+            return id.ToString();
+        }
+
+
         [HttpGet]
         [Route("")]
         public async Task<IEnumerable<BookViewModel>> GetAll(int? page,int? pageSize)

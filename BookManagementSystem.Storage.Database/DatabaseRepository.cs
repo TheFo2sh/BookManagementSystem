@@ -55,5 +55,11 @@ namespace BookManagementSystem.Storage.Database
             
             return true;
         }
+
+        public async Task<int> Count()
+        {
+            return await dbSet.CountAsync();
+
+        }
     }
 }

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using BookManagementSystem.Domain.Book;
 using BookManagementSystem.Domain.Commands;
 using BookManagementSystem.Infrastructure.Domain;
+using Dasync.Collections;
 using MediatR;
 
 namespace BookManagementSystem.Domain.Book
@@ -15,7 +16,8 @@ namespace BookManagementSystem.Domain.Book
         ICommandHandler<ChangeCategoryCommand>,
         ICommandHandler<ChangeDescriptionCommand>,
         ICommandHandler<AddAuthorCommand>,
-        ICommandHandler<RemoveAuthorCommand>
+        ICommandHandler<RemoveAuthorCommand>,
+        ICommandHandler<CreateBookCommand>
     {
         private readonly DomainObjectRepository<BookAggregate, BookEventHandler, BookState> _repository;
 
@@ -56,6 +58,19 @@ namespace BookManagementSystem.Domain.Book
         {
             var aggregate = await _repository.GetAsync(request.AggregateId);
             await aggregate.RemoveAuthor(request.Author);
+            return true;
+        }
+
+        public async Task<bool> Handle(CreateBookCommand request, CancellationToken cancellationToken)
+        {
+            var aggregate = await _repository.GetAsync(request.AggregateId);
+            var transaction = aggregate.GetTransaction();
+                await aggregate.ChangeTitle(request.Title, transaction);
+                await aggregate.ChangeDescription(request.Description, transaction);
+                await aggregate.ChangeCategory(request.CategoryId, transaction);
+
+                await request.AuthorsId.ParallelForEachAsync(id => aggregate.AddAuthor(id, transaction), cancellationToken);
+                await aggregate.CommitAsync(transaction);
             return true;
         }
     }

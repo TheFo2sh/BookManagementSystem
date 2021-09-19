@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Dasync.Collections;
@@ -7,6 +8,17 @@ using MediatR;
 
 namespace BookManagementSystem.Infrastructure.Domain
 {
+    public class EventsTransaction
+    {
+        internal EventsTransaction()
+        {
+            Events = new List<object>();
+        }
+        public void Add(object @event){
+            Events.Add(@event);
+        }
+        internal List<object> Events { get; }
+    }
     public abstract class BaseDomainObject<TEventsHandler, TState> where TEventsHandler : new()
     {
         private readonly IEventsRepository _eventsRepository;
@@ -27,6 +39,7 @@ namespace BookManagementSystem.Infrastructure.Domain
 
         }
 
+        public EventsTransaction GetTransaction() => new();
         protected TState GetCurrentState()
         {
             return StateStore.TryPeek(out TState oldState) ? oldState : default;
@@ -51,10 +64,17 @@ namespace BookManagementSystem.Infrastructure.Domain
             else
                 throw new NotSupportedException($"{evt.GetType()} is has no registered handler in {typeof(TEventsHandler)}");
         }
-        
-        public async Task<long> CommitAsync(object evt)
+
+        public async Task<long> CommitAsync(EventsTransaction evts)
         {
-            Position = await _eventsRepository.CommitAsync(this.GetType().Name, AggregateId, evt);
+            return await CommitAsync(evts.Events);
+        }
+        protected async Task<long> CommitAsync(params object[] evts)
+        {
+            foreach (var evt in evts)
+            {
+                Position = await _eventsRepository.CommitAsync(this.GetType().Name, AggregateId, evt);
+            }
             var currentState = GetCurrentState();
             StateStore = new ConcurrentStack<TState>(new[] { currentState });
             OnEventsCommitted(currentState, Position);

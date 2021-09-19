@@ -12,5 +12,7 @@ namespace BookManagementSystem.Storage.Database
         Task<bool> Add(T entity);
         Task<bool> Delete(TKey id);
         Task<bool> Upsert(string id, T entity);
+        Task<int> Count();
+
     }
 }

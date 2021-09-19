@@ -19,6 +19,14 @@ namespace BookManagementSystem.ViewModels
         public string Category { get; set; }
         public IEnumerable<string> Authors { get; set; }
 
+    }
+    public class CreateBookViewModel
+    {
+        public string Id { get; set; }
+        public string Title { get; set; }
+        public string Description { get; set; }
+        public int Category { get; set; }
+        public IEnumerable<int> Authors { get; set; }
 
     }
 }

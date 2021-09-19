@@ -53,7 +53,7 @@ namespace BookManagementSystem
             builder.RegisterGeneric(typeof(DomainObjectRepository<,,>)).AsSelf();
             builder.RegisterType<EventsRepository>().AsImplementedInterfaces().AsSelf();
             builder.RegisterType<BookCommandsHandler>().AsImplementedInterfaces();
-            builder.RegisterType<UpdateBookCommandsValidator>().AsImplementedInterfaces();
+            builder.RegisterType<BookCommandsValidator>().AsImplementedInterfaces();
             builder.RegisterType<ReadModelUpdateService>().AsImplementedInterfaces();
             builder.RegisterType<Mediator>().As<IMediator>().InstancePerLifetimeScope();
             builder.RegisterType<ApplicationDbContext>().AsSelf().AsImplementedInterfaces().SingleInstance();

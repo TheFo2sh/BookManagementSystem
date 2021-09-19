@@ -14,12 +14,14 @@ namespace BookManagementSystem.Services
     {
         private readonly IDatabaseRepository<BookEntity, string> _booksRepository;
         private readonly IDatabaseRepository<AuthorEntity, int> _authorsRepository;
+        private readonly IDatabaseRepository<CategoryEntity, int> _categoryRepository;
 
         private readonly IUnitOfWork _unitOfWork;
-        public ReadModelUpdateService(IDatabaseRepository<BookEntity, string> booksRepository, IDatabaseRepository<AuthorEntity, int> authorsRepository, IUnitOfWork unitOfWork)
+        public ReadModelUpdateService(IDatabaseRepository<BookEntity, string> booksRepository, IDatabaseRepository<AuthorEntity, int> authorsRepository, IUnitOfWork unitOfWork, IDatabaseRepository<CategoryEntity, int> categoryRepository)
         {
             _booksRepository = booksRepository;
             _unitOfWork = unitOfWork;
+            _categoryRepository = categoryRepository;
             _authorsRepository = authorsRepository;
         }
 
@@ -32,9 +34,13 @@ namespace BookManagementSystem.Services
                 Description = notification.State.Description,
                 CategoryId = notification.State.CategoryId,
             };
-
+          
+            if (notification.State.CategoryId.HasValue)
+                bookEntity.Category =await _categoryRepository.GetById(notification.State.CategoryId.GetValueOrDefault());
+           
             bookEntity.Authors = (await Task.WhenAll(
                 notification.State.AuthorsId.Select(async id => await _authorsRepository.GetById(id)))).ToList();
+           
             await _booksRepository.Upsert(notification.State.Id, bookEntity);
             await _unitOfWork.CompleteAsync();
         }
