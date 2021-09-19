@@ -11,7 +11,7 @@ namespace BookManamgement.AsyncStreams
         private bool _isLastOne;
         private readonly Func<long,T, bool> _isLastOneFunc;
         private readonly int _pageSize;
-        public PagingEnumerator(Func<long, int, Task<T>> func, Func<long,T, bool> isLastOneFunc, int pageSize, long startPage = 0)
+        public PagingEnumerator(Func<long, int, Task<T>> func, Func<long,T, bool> isLastOneFunc, int pageSize=10, long startPage = 0)
         {
             _func = func;
             _isLastOneFunc = isLastOneFunc;
@@ -33,7 +33,7 @@ namespace BookManamgement.AsyncStreams
             Current = await _func(cursor, _pageSize);
 
             cursor += _pageSize;
-            _isLastOne = _isLastOneFunc(cursor,Current);
+            _isLastOne = _isLastOneFunc(cursor, Current);
 
             return true;
         }

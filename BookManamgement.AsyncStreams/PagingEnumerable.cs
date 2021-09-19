@@ -11,6 +11,7 @@ namespace BookManamgement.AsyncStreams
         private readonly long _startPage;
         private readonly Func<long,T, bool> _isLastOneFunc;
         private readonly int _pageSize;
+
         public PagingEnumerable(Func<long, int, Task<T>> func, Func<long,T, bool> isLastOneFunc, long startPage, int pageSize)
         {
             _func = func;

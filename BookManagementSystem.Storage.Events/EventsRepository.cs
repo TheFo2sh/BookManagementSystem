@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using BookManagementSystem.Infrastructure.Domain;
@@ -29,17 +30,18 @@ namespace BookManagementSystem.Storage.Events
             return await JsonSerializer.DeserializeAsync(memoryStream, type);
         }
 
-        public IAsyncEnumerable<Task<object>> GetEvents<T>(string aggregateId,long pageNumber=0, int pageSize=10)
+        public IAsyncEnumerable<Task<object>> GetEvents<T>(string aggregateId,long? pageNumber, int? pageSize, string eventName = null)
         {
-            return GetEvents(typeof(T).Name, aggregateId, pageNumber,pageSize);
+            return GetEvents(typeof(T).Name, aggregateId, pageNumber,pageSize,eventName);
         }
 
         public IAsyncEnumerable<Task<object>> GetEvents(string aggregatetype, string aggregateId)
         {
-            return GetEvents(aggregatetype, aggregateId, 0,10);
+            return GetEvents(aggregatetype, aggregateId, null,null);
         }
 
-        public IAsyncEnumerable<Task<object>> GetEvents(string aggregatetype, string aggregateId, long? page,int? pageSize)
+        public IAsyncEnumerable<Task<object>> GetEvents(string aggregatetype, string aggregateId, long? page,
+            int? pageSize, string eventName = null)
         {
             Task<StreamEventsSlice> LoadEvents(long start, int count) =>
                 _eventStoreConnection.ReadStreamEventsForwardAsync($"{aggregatetype}_{aggregateId}", start, count,
@@ -48,11 +50,20 @@ namespace BookManagementSystem.Storage.Events
             bool IsEnd(long index, StreamEventsSlice slice) =>
                 slice.IsEndOfStream || (page.HasValue && index >= page * pageSize);
 
-            var slices = EnumerableFactory.Create(LoadEvents, IsEnd, page.GetValueOrDefault(0),pageSize.GetValueOrDefault(10));
+            IAsyncEnumerable<StreamEventsSlice> slices = EnumerableFactory
+                .Create(LoadEvents, IsEnd,
+                    page.GetValueOrDefault(0), pageSize.GetValueOrDefault(10));
+           
+            var events = slices.SelectMany(slice => slice.Events).Select(x => x.Event);
+            if (!string.IsNullOrEmpty(eventName))
+            {
+                events = events.Where(ev =>
+                {
+                    return ev.EventType.Contains(eventName);
+                });
+            }
 
-            var events = slices.SelectMany(slice => slice.Events).Select(x => x.Event).Select(Parse);
-
-            return events;
+            return events.Select(Parse);
 
         }
 

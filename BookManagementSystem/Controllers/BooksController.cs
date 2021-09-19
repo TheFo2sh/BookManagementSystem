@@ -75,9 +75,9 @@ namespace BookManagementSystem.Controllers
 
         [HttpGet]
         [Route("{id}/events")]
-        public async IAsyncEnumerable<EventViewModel> GetEvents(string id, long page, int pageSize)
+        public async IAsyncEnumerable<EventViewModel> GetEvents(string id, long? page, int? pageSize,string filter=null)
         {
-            var list = await _eventsRepository.GetEvents<BookAggregate>(id,page, pageSize).ToListAsync();
+            var list = await _eventsRepository.GetEvents<BookAggregate>(id,page, pageSize, filter).ToListAsync();
             foreach (var item in list)
             {
                 var evt = await item;
