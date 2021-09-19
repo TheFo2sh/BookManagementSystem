@@ -67,7 +67,7 @@ namespace BookManagementSystem.Infrastructure.Domain
 
         public async Task<long> CommitAsync(EventsTransaction evts)
         {
-            return await CommitAsync(evts.Events);
+            return await CommitAsync(evts.Events.ToArray());
         }
         protected async Task<long> CommitAsync(params object[] evts)
         {
