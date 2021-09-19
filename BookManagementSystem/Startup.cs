@@ -9,6 +9,7 @@ using BookManagementSystem.Infrastructure.Domain;
 using BookManagementSystem.Services;
 using BookManagementSystem.Storage.Database;
 using BookManagementSystem.Storage.Events;
+using BookManagementSystem.Validators;
 using EventStore.ClientAPI;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
@@ -52,6 +53,7 @@ namespace BookManagementSystem
             builder.RegisterGeneric(typeof(DomainObjectRepository<,,>)).AsSelf();
             builder.RegisterType<EventsRepository>().AsImplementedInterfaces().AsSelf();
             builder.RegisterType<BookCommandsHandler>().AsImplementedInterfaces();
+            builder.RegisterType<UpdateBookCommandsValidator>().AsImplementedInterfaces();
             builder.RegisterType<ReadModelUpdateService>().AsImplementedInterfaces();
             builder.RegisterType<Mediator>().As<IMediator>().InstancePerLifetimeScope();
             builder.RegisterType<ApplicationDbContext>().AsSelf().AsImplementedInterfaces().SingleInstance();
@@ -62,7 +64,11 @@ namespace BookManagementSystem
             builder.Register<ServiceFactory>(context =>
             {
                 var c = context.Resolve<IComponentContext>();
-                return t => c.Resolve(t);
+                return t =>
+                {
+                    var resolve = c.Resolve(t);
+                    return resolve;
+                };
             });
 
         }
