@@ -2,6 +2,7 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { ColumnMode, SelectionType } from '@swimlane/ngx-datatable';
 import {Router, ActivatedRoute, Params} from '@angular/router';
+import { style } from '@angular/animations';
 
 @Component({
   selector: 'app-counter-component',
@@ -15,7 +16,13 @@ export class CounterComponent implements OnInit {
   singleSelectionType:SelectionType;
   activatedRoute: ActivatedRoute;
   event: string;
- 
+  filter={event:null};
+  eventsTypes=[
+                {id:'ChangeTitle',description:'Title Changed'},
+                {id:'ChangeDescription',description:'Description Changed'},
+                {id:'ChangeCategory',description:'Category Changed'},
+                {id:'AddAuthor',description:'Author Added'},
+                {id:'RemoveAuthor',description:'Author Removed'}];
   constructor(http: HttpClient, activatedRoute: ActivatedRoute, @Inject('BASE_URL') baseUrl: string) {
     this.http=http;
     this.baseUrl=baseUrl;
@@ -30,7 +37,15 @@ export class CounterComponent implements OnInit {
 
       });
   }
+  eventsFilterSelectionChanged(args:{value:{id:string , description:string}}){
+    if(args==null) 
+      this.filter.event=null;
+    else
+      this.filter.event=args.value.id;
+    
+     this.LoadData();
 
+  }
   pageCallback(arg: { offset: number; }) {
     this.page.offset = arg.offset;
     this.LoadData();
@@ -40,10 +55,13 @@ export class CounterComponent implements OnInit {
     //alert(arg.selected[0].title);
   }
   LoadData() {
-    const params = new HttpParams()
+    let params = new HttpParams()
       .set('page', `${this.page.offset+1}`)
       .set('pageSize', `${this.page.limit}`);
 
+      if(this.filter.event!=null){
+        params=params.set('Type',this.filter.event)
+      }
     this.http.get<Event[]>(this.baseUrl + 'Books/'+this.event+'/events',{params}).subscribe(books=>{
       this.rows=books;
       this.page.count=10;

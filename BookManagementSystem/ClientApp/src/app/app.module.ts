@@ -10,6 +10,7 @@ import { HomeComponent } from './home/home.component';
 import { CounterComponent } from './counter/counter.component';
 import { FetchDataComponent } from './fetch-data/fetch-data.component';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
+import { SelectDropDownModule } from 'ngx-select-dropdown'
 
 @NgModule({
   declarations: [
@@ -21,6 +22,7 @@ import { NgxDatatableModule } from '@swimlane/ngx-datatable';
   ],
   imports: [
     NgxDatatableModule,
+    SelectDropDownModule,
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
     HttpClientModule,
     FormsModule,

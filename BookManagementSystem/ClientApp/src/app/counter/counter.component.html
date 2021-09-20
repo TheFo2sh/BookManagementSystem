@@ -1,4 +1,7 @@
 <div>
+    <div>
+    <ngx-select-dropdown (change)="eventsFilterSelectionChanged($event)"  [multiple]="false"  [options]="eventsTypes"></ngx-select-dropdown>
+    </div>
     <ngx-datatable 
     [rows]="rows" 
     [columns]="columns" 
@@ -28,7 +31,7 @@
       </ngx-datatable-column>
     <ngx-datatable-column name="createdDate">
         <ng-template let-value="value" ngx-datatable-cell-template>
-            <div>{{ value|short }}</div>
+            <div>{{ value | date:'short' }}</div>
         </ng-template>
       </ngx-datatable-column>
    </ngx-datatable>
