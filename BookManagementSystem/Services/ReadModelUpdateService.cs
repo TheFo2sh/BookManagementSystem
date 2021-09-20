@@ -12,36 +12,44 @@ namespace BookManagementSystem.Services
 {
     public class ReadModelUpdateService:INotificationHandler<BookStateChangedNotification>
     {
-        private readonly IDatabaseRepository<BookEntity, string> _booksRepository;
-        private readonly IDatabaseRepository<AuthorEntity, int> _authorsRepository;
-        private readonly IDatabaseRepository<CategoryEntity, int> _categoryRepository;
+        private readonly IWriteDatabaseRepository<BookEntity, string> _booksRepository;
+        private readonly IWriteDatabaseRepository<AuthorEntity, int> _authorsRepository;
+        private readonly IWriteDatabaseRepository<CategoryEntity, int> _categoryRepository;
 
         private readonly IUnitOfWork _unitOfWork;
-        public ReadModelUpdateService(IDatabaseRepository<BookEntity, string> booksRepository, IDatabaseRepository<AuthorEntity, int> authorsRepository, IUnitOfWork unitOfWork, IDatabaseRepository<CategoryEntity, int> categoryRepository)
+        public ReadModelUpdateService(IUnitOfWork unitOfWork)
         {
-            _booksRepository = booksRepository;
             _unitOfWork = unitOfWork;
-            _categoryRepository = categoryRepository;
-            _authorsRepository = authorsRepository;
+
+            _booksRepository = _unitOfWork.GetWriteRepository<BookEntity, string>();
+            _categoryRepository = _unitOfWork.GetWriteRepository<CategoryEntity, int>(); 
+            _authorsRepository = _unitOfWork.GetWriteRepository<AuthorEntity, int>(); 
         }
 
         public async Task Handle(BookStateChangedNotification notification, CancellationToken cancellationToken)
         {
-            var bookEntityAuthors =
-                (await Task.WhenAll(
-                    notification.State.AuthorsId.Select(async id => await _authorsRepository.GetById(id)))).ToList();
-
-            var oldBook = await _booksRepository.GetById(notification.State.Id);
-            if (oldBook != null)
+            try
             {
-                await UpdateBook(notification, oldBook);
-            }
-            else
-            {
-                await AddBook(notification, bookEntityAuthors);
-            }
+                var bookEntityAuthors =
+                    (await Task.WhenAll(
+                        notification.State.AuthorsId.Select(async id => await _authorsRepository.GetById(id)))).ToList();
 
-            await _unitOfWork.CompleteAsync();
+                var oldBook = await _booksRepository.GetById(notification.State.Id);
+                if (oldBook != null)
+                {
+                    await UpdateBook(notification, oldBook);
+                }
+                else
+                {
+                    await AddBook(notification, bookEntityAuthors);
+                }
+
+                await _unitOfWork.CompleteAsync();
+            }
+            finally
+            {
+                _unitOfWork.Dispose();
+            }
         }
 
         private async Task AddBook(BookStateChangedNotification notification, List<AuthorEntity> bookEntityAuthors)
@@ -80,5 +88,7 @@ namespace BookManagementSystem.Services
 
             _booksRepository.Update(oldBook);
         }
+
+      
     }
 }

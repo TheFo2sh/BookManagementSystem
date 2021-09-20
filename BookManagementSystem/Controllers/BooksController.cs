@@ -23,14 +23,14 @@ namespace BookManagementSystem.Controllers
     [Route("[controller]")]
     public class BooksController : ControllerBase
     {
-        private readonly IDatabaseRepository<BookEntity,string> _repository;
-        private readonly IDatabaseRepository<CategoryEntity, int> _categoriesRepository;
-        private readonly IDatabaseRepository<AuthorEntity, int> _authorsRepository;
+        private readonly IReadDatabaseRepository<BookEntity,string> _repository;
+        private readonly IReadDatabaseRepository<CategoryEntity, int> _categoriesRepository;
+        private readonly IReadDatabaseRepository<AuthorEntity, int> _authorsRepository;
 
         private readonly IEventsRepository _eventsRepository;
         private readonly ILogger<BooksController> _logger;
         private readonly IMediator _mediator;
-        public BooksController(ILogger<BooksController> logger, IMediator mediator, IDatabaseRepository<BookEntity, string> repository, IEventsRepository eventsRepository, IDatabaseRepository<CategoryEntity, int> categoriesRepository, IDatabaseRepository<AuthorEntity, int> authorsRepository)
+        public BooksController(ILogger<BooksController> logger, IMediator mediator, IReadDatabaseRepository<BookEntity, string> repository, IEventsRepository eventsRepository, IReadDatabaseRepository<CategoryEntity, int> categoriesRepository, IReadDatabaseRepository<AuthorEntity, int> authorsRepository)
         {
             _logger = logger;
             _mediator = mediator;

@@ -13,10 +13,10 @@ namespace BookManagementSystem.Controllers
     [Route("[controller]")]
     public class DataController : ControllerBase
     {
-        private readonly IDatabaseRepository<CategoryEntity, int> _categoryRepository;
-        private readonly IDatabaseRepository<AuthorEntity, int> _authorRepository;
+        private readonly IReadDatabaseRepository<CategoryEntity, int> _categoryRepository;
+        private readonly IReadDatabaseRepository<AuthorEntity, int> _authorRepository;
 
-        public DataController(IDatabaseRepository<CategoryEntity, int> categoryRepository, IDatabaseRepository<AuthorEntity, int> authorRepository)
+        public DataController(IReadDatabaseRepository<CategoryEntity, int> categoryRepository, IReadDatabaseRepository<AuthorEntity, int> authorRepository)
         {
             _categoryRepository = categoryRepository;
             _authorRepository = authorRepository;

@@ -18,10 +18,10 @@ namespace BookManagementSystem.Validators
         ICommandValidator<AddAuthorCommand>,
         ICommandValidator<CreateBookCommand>
     {
-        private readonly IDatabaseRepository<CategoryEntity, int> _categoryRepository;
-        private readonly IDatabaseRepository<AuthorEntity, int> _authorRepository;
+        private readonly IReadDatabaseRepository<CategoryEntity, int> _categoryRepository;
+        private readonly IReadDatabaseRepository<AuthorEntity, int> _authorRepository;
 
-        public BookCommandsValidator(IDatabaseRepository<CategoryEntity, int> categoryRepository, IDatabaseRepository<AuthorEntity, int> authorRepository)
+        public BookCommandsValidator(IReadDatabaseRepository<CategoryEntity, int> categoryRepository, IReadDatabaseRepository<AuthorEntity, int> authorRepository)
         {
             _categoryRepository = categoryRepository;
             _authorRepository = authorRepository;

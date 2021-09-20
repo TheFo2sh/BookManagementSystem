@@ -2,6 +2,9 @@
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Autofac.Features.OwnedInstances;
+using BookManagementSystem.Storage.Database.Entities;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace BookManagementSystem.Storage.Database
@@ -13,11 +16,11 @@ namespace BookManagementSystem.Storage.Database
 
 
         public UnitOfWork(
-            ApplicationDbContext context,
+            Owned<ApplicationDbContext> context,
             ILoggerFactory loggerFactory
         )
         {
-            _context = context;
+            _context = context.Value;
             _logger = loggerFactory.CreateLogger("logs");
 
         }
@@ -25,6 +28,11 @@ namespace BookManagementSystem.Storage.Database
         public async Task CompleteAsync()
         {
             await _context.SaveChangesAsync();
+        }
+
+        public IWriteDatabaseRepository<T, Tkey> GetWriteRepository<T, Tkey>() where T :  BaseEntity<Tkey>
+        {
+            return new WriteDatabaseRepository<T, Tkey>(_context);
         }
 
         public void Dispose()

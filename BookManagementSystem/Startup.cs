@@ -56,9 +56,10 @@ namespace BookManagementSystem
             builder.RegisterType<BookCommandsValidator>().AsImplementedInterfaces();
             builder.RegisterType<ReadModelUpdateService>().AsImplementedInterfaces();
             builder.RegisterType<Mediator>().As<IMediator>().InstancePerLifetimeScope();
-            builder.RegisterType<ApplicationDbContext>().AsSelf().AsImplementedInterfaces().SingleInstance();
-            builder.RegisterType<UnitOfWork>().AsSelf().AsImplementedInterfaces().SingleInstance();
-            builder.RegisterGeneric(typeof(DatabaseRepository<,>)).As(typeof(IDatabaseRepository<,>));
+
+            builder.RegisterType<ApplicationDbContext>().AsSelf().AsImplementedInterfaces().InstancePerLifetimeScope();
+            builder.RegisterType<UnitOfWork>().AsSelf().AsImplementedInterfaces().ExternallyOwned();
+            builder.RegisterGeneric(typeof(ReadDatabaseRepository<,>)).As(typeof(IReadDatabaseRepository<,>)).InstancePerLifetimeScope();
 
 
             builder.Register<ServiceFactory>(context =>
