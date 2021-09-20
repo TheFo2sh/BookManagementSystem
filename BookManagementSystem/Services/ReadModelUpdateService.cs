@@ -60,6 +60,7 @@ namespace BookManagementSystem.Services
                 Title = notification.State.Title,
                 Description = notification.State.Description,
                 CategoryId = notification.State.CategoryId,
+                CreatedTime = DateTime.Now
             };
 
             if (notification.State.CategoryId.HasValue)
