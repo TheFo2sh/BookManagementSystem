@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace BookManagementSystem.Storage.Database.Entities
@@ -11,7 +12,7 @@ namespace BookManagementSystem.Storage.Database.Entities
         public int? CategoryId { get; set; }
         public virtual CategoryEntity Category { get; set; } = new ();
         public virtual ICollection<AuthorEntity> Authors { get; set; }
+        public  DateTime? CreatedTime { get; set; }
 
-       
     }
 }

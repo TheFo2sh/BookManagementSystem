@@ -71,23 +71,25 @@ namespace BookManagementSystem.Controllers
 
         [HttpGet]
         [Route("")]
-        public async Task<IEnumerable<BookViewModel>> GetAll(int? page,int? pageSize)
+        public async Task<IEnumerable<BookViewModel>> GetAll(int? page, int? pageSize)
         {
-            var books =  _repository.All();
-            if (page!=null)
+            var books = _repository.All();
+            if (page != null)
             {
-                var skipped = (page.Value-1)* pageSize.GetValueOrDefault(10);
+                var skipped = (page.Value - 1) * pageSize.GetValueOrDefault(10);
                 books = books.Skip(skipped).Take(pageSize.GetValueOrDefault(10));
             }
 
-            var bookViewModel =await books.Select(bookEntity => new BookViewModel()
-            {
-                Id = bookEntity.Id,
-                Title = bookEntity.Title,
-                Description = bookEntity.Description,
-                Category = bookEntity.Category.Name,
-                Authors = bookEntity.Authors.Select(author => author.Name)
-            }).ToListAsync();
+            var bookViewModel = await books
+                .OrderBy(item => item.CreatedTime)
+                .Select(bookEntity => new BookViewModel()
+                {
+                    Id = bookEntity.Id,
+                    Title = bookEntity.Title,
+                    Description = bookEntity.Description,
+                    Category = bookEntity.Category.Name,
+                    Authors = bookEntity.Authors.Select(author => author.Name)
+                }).ToListAsync();
             return bookViewModel;
         }
 
