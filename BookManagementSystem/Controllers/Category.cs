@@ -34,6 +34,7 @@ namespace BookManagementSystem.Controllers
         {
             return await _authorRepository.All().Select(cat => new AuthorViewModel() { Id = cat.Id, Author = cat.Name })
                 .ToListAsync();
+
         }
     }
 }
