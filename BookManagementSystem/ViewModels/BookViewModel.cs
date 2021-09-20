@@ -14,6 +14,17 @@ namespace BookManagementSystem.ViewModels
         public string EventDescription { get; set; }
         public DateTime? CreatedDate { get; set; }
     }
+
+    public class CategoryViewModel
+    {
+        public int Id { get; set; }
+        public string Category { get; set; }
+    }
+    public class AuthorViewModel
+    {
+        public int Id { get; set; }
+        public string Author { get; set; }
+    }
     public class BookViewModel
     {
         public string Id { get; set; }

@@ -19,7 +19,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BookManagementSystem.Controllers
 {
-    
     [ApiController]
     [Route("[controller]")]
     public class BooksController : ControllerBase

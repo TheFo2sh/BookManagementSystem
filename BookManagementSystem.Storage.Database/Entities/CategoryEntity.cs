@@ -8,6 +8,5 @@ namespace BookManagementSystem.Storage.Database.Entities
 
         public virtual ICollection<BookEntity> Books { get; set; }
 
-
     }
 }
