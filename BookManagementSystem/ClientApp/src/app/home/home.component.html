@@ -1,4 +1,4 @@
-<h1>Hello, world!</h1>
+<h1>Books</h1>
 <div>
   <ngx-datatable 
   [rows]="rows" 
@@ -6,6 +6,7 @@
   [rows]="rows"
   [columns]="columns"
   [columnMode]="'force'"
+  [selectionType]="singleSelectionType"
   [headerHeight]="50"
   [footerHeight]="50"
   [rowHeight]="'auto'"
@@ -14,5 +15,7 @@
   [offset]="page.offset"
   [limit]="page.limit"
   (page)="pageCallback($event)"
-  class="material table table-striped"> </ngx-datatable>
+  class="material table table-striped"
+  (select)="onSelect($event)">
+ </ngx-datatable>
 </div>

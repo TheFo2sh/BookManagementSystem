@@ -14,6 +14,7 @@ using BookManagementSystem.ViewModels;
 using Dasync.Collections;
 using MediatR;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Razor.TagHelpers;
 using Microsoft.EntityFrameworkCore;
 
 namespace BookManagementSystem.Controllers
@@ -24,15 +25,20 @@ namespace BookManagementSystem.Controllers
     public class BooksController : ControllerBase
     {
         private readonly IDatabaseRepository<BookEntity,string> _repository;
+        private readonly IDatabaseRepository<CategoryEntity, int> _categoriesRepository;
+        private readonly IDatabaseRepository<AuthorEntity, int> _authorsRepository;
+
         private readonly IEventsRepository _eventsRepository;
         private readonly ILogger<BooksController> _logger;
         private readonly IMediator _mediator;
-        public BooksController(ILogger<BooksController> logger, IMediator mediator, IDatabaseRepository<BookEntity, string> repository, IEventsRepository eventsRepository)
+        public BooksController(ILogger<BooksController> logger, IMediator mediator, IDatabaseRepository<BookEntity, string> repository, IEventsRepository eventsRepository, IDatabaseRepository<CategoryEntity, int> categoriesRepository, IDatabaseRepository<AuthorEntity, int> authorsRepository)
         {
             _logger = logger;
             _mediator = mediator;
             _repository = repository;
             _eventsRepository = eventsRepository;
+            _categoriesRepository = categoriesRepository;
+            _authorsRepository = authorsRepository;
         }
 
         [HttpGet]
@@ -113,8 +119,14 @@ namespace BookManagementSystem.Controllers
             var list = await _eventsRepository.GetEvents<BookAggregate>(id,page, pageSize, FilterEvents).ToListAsync();
             foreach (var item in list)
             {
-                var evt = await item;
-                yield return new EventViewModel() { Args = evt , Event = evt.GetType().Name};
+                var evt = (BookEvents)await item;
+                yield return new EventViewModel()
+                {
+                    Args = evt,
+                    Event = evt.GetType().Name,
+                    CreatedDate=evt.CreatedDate,
+                    EventDescription = await GeEventDescription(evt)
+                };
             }
         }
 
@@ -151,7 +163,19 @@ namespace BookManagementSystem.Controllers
                 await _mediator.Send(new RemoveAuthorCommand(Guid.NewGuid(), id, request.AuthorId));
         }
 
-      
+        public async Task<string> GeEventDescription(object data)
+        {
+            return data switch
+            {
+                BookEvents.ChangeTitle changeTitle => $"Title Changed to {changeTitle.Title}",
+                BookEvents.ChangeDescription changeDescription => $"Description Changed to {changeDescription.Description}",
+                BookEvents.ChangeCategory changeCategory => $"Category Changed to {(await _categoriesRepository.GetById(changeCategory.CategoryId))?.Name}",
+                BookEvents.AddAuthor addAuthor => $"Author { (await _authorsRepository.GetById(addAuthor.AuthorId)).Name} added",
+                BookEvents.RemoveAuthor removeAuthor => $"Author {(await _authorsRepository.GetById(removeAuthor.AuthorId)).Name} removed",
+                _ => string.Empty
+            };
+        }
+
 
     }
 }

@@ -1,5 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
+import { ColumnMode, SelectionType } from '@swimlane/ngx-datatable';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -10,10 +12,14 @@ export class HomeComponent implements OnInit {
   rows:Book[]
   http: HttpClient;
   baseUrl: string;
+  singleSelectionType:SelectionType;
+  router:Router;
  
-  constructor(http: HttpClient, @Inject('BASE_URL') baseUrl: string) {
+  constructor(http: HttpClient,router:Router, @Inject('BASE_URL') baseUrl: string) {
     this.http=http;
     this.baseUrl=baseUrl;
+    this.singleSelectionType=SelectionType.single;
+    this.router=router;
   }
  
   ngOnInit(): void {
@@ -24,7 +30,10 @@ export class HomeComponent implements OnInit {
     this.page.offset = arg.offset;
     this.LoadData();
   }
-
+  onSelect(arg:{ selected:Book[] }) {
+    console.log(arg);
+    this.router.navigate(["/counter"],{queryParams:{event:arg.selected[0].id}});
+  }
   LoadData() {
     const params = new HttpParams()
       .set('page', `${this.page.offset+1}`)

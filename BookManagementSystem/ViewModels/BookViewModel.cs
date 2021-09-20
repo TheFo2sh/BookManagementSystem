@@ -10,6 +10,9 @@ namespace BookManagementSystem.ViewModels
         public string Event { get; set; }
 
         public object Args { get; set; }
+
+        public string EventDescription { get; set; }
+        public DateTime? CreatedDate { get; set; }
     }
     public class BookViewModel
     {
