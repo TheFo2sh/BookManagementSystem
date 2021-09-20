@@ -1,0 +1,32 @@
+<div>
+    <form [formGroup]='BookCreationForm' (ngSubmit)='onSubmit()'>
+        <div>
+            <label>Book Title</label>
+            <br/>
+            <input type="text" formControlName="title" placeholder="book title"/> 
+        </div>
+        
+        <div>
+            <label>Book Desctiption</label>
+            <br/>
+            <input type="Desctiption" formControlName="description" placeholder="book description"/> 
+        </div>
+       
+        <div>
+            <label>Category</label>
+            <br/>
+            <select formControlName="categoryId" (change)='CategorySelected($event)'>
+                <option [value]="categoryItem.id"  *ngFor="let categoryItem of Categories | async">{{categoryItem.category}}</option>
+            </select> 
+        </div>
+
+        <div>
+            <label>Authors</label>
+            <br/>
+            <select formControlName="authorId" (change)='AuthorSelected($event)'>
+                <option [value]="authorItem.id"  *ngFor="let authorItem of Authors | async">{{authorItem.author}}</option>
+            </select> 
+        </div>
+        <button id="apply_button">Submit</button>
+    </form>
+</div>
