@@ -5,10 +5,10 @@ import {Router, ActivatedRoute, Params} from '@angular/router';
 import { style } from '@angular/animations';
 
 @Component({
-  selector: 'app-counter-component',
-  templateUrl: './counter.component.html'
+  selector: 'book-events-component',
+  templateUrl: './book-events.html'
 })
-export class CounterComponent implements OnInit {
+export class BookEventsComponent implements OnInit {
   page = { limit: 2,count: 1,offset: 0,orderBy: 'id',orderDir: 'desc'};
   rows:Event[]
   http: HttpClient;

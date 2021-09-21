@@ -32,7 +32,7 @@ export class HomeComponent implements OnInit {
   }
   onSelect(arg:{ selected:Book[] }) {
     console.log(arg);
-    this.router.navigate(["/counter"],{queryParams:{event:arg.selected[0].id}});
+    this.router.navigate(["/bookEvents"],{queryParams:{event:arg.selected[0].id}});
   }
   LoadData() {
     const params = new HttpParams()

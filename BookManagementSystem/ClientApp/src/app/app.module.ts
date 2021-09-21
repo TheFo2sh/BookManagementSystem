@@ -7,7 +7,7 @@ import { RouterModule } from '@angular/router';
 import { AppComponent } from './app.component';
 import { NavMenuComponent } from './nav-menu/nav-menu.component';
 import { HomeComponent } from './home/home.component';
-import { CounterComponent } from './counter/counter.component';
+import { BookEventsComponent } from './book-events/book-events.component';
 import { FetchDataComponent } from './fetch-data/fetch-data.component';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { SelectDropDownModule } from 'ngx-select-dropdown'
@@ -18,7 +18,7 @@ import { CreateBookFormComponenet } from './create-book-from/create-book-form.co
     AppComponent,
     NavMenuComponent,
     HomeComponent,
-    CounterComponent,
+    BookEventsComponent,
     CreateBookFormComponenet,
     FetchDataComponent
   ],
@@ -31,7 +31,7 @@ import { CreateBookFormComponenet } from './create-book-from/create-book-form.co
     ReactiveFormsModule,
     RouterModule.forRoot([
       { path: '', component: HomeComponent, pathMatch: 'full' },
-      { path: 'counter', component: CounterComponent },
+      { path: 'bookEvents', component: BookEventsComponent },
       { path: 'fetch-data', component: FetchDataComponent },
       { path: 'create', component:CreateBookFormComponenet}
     ])
