@@ -169,11 +169,11 @@ namespace BookManagementSystem.Controllers
         {
             return data switch
             {
-                BookEvents.ChangeTitle changeTitle => $"Title Changed to {changeTitle.Title}",
-                BookEvents.ChangeDescription changeDescription => $"Description Changed to {changeDescription.Description}",
-                BookEvents.ChangeCategory changeCategory => $"Category Changed to {(await _categoriesRepository.GetById(changeCategory.CategoryId))?.Name}",
-                BookEvents.AddAuthor addAuthor => $"Author { (await _authorsRepository.GetById(addAuthor.AuthorId)).Name} added",
-                BookEvents.RemoveAuthor removeAuthor => $"Author {(await _authorsRepository.GetById(removeAuthor.AuthorId)).Name} removed",
+                BookEvents.TitleChanged changeTitle => $"Title Changed to {changeTitle.Title}",
+                BookEvents.DescriptionChanged changeDescription => $"Description Changed to {changeDescription.Description}",
+                BookEvents.CategoryChanged changeCategory => $"Category Changed to {(await _categoriesRepository.GetById(changeCategory.CategoryId))?.Name}",
+                BookEvents.AuthorAdded addAuthor => $"Author { (await _authorsRepository.GetById(addAuthor.AuthorId)).Name} added",
+                BookEvents.AuthorRemoved removeAuthor => $"Author {(await _authorsRepository.GetById(removeAuthor.AuthorId)).Name} removed",
                 _ => string.Empty
             };
         }

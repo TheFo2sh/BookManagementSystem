@@ -15,28 +15,28 @@ namespace BookManagementSystem.Domain.Book
 
         public async Task ChangeTitle(string title,EventsTransaction transaction=null)
         {
-            var testEvent = new BookEvents.ChangeTitle(title, DateTime.Now);
+            var testEvent = new BookEvents.TitleChanged(title, DateTime.Now);
             await Apply(testEvent, transaction);
         }
         public async Task ChangeDescription(string description, EventsTransaction transaction = null)
         {
-            var testEvent = new BookEvents.ChangeDescription(description, DateTime.Now);
-            await Apply<BookEvents.ChangeDescription>(testEvent, transaction);
+            var testEvent = new BookEvents.DescriptionChanged(description, DateTime.Now);
+            await Apply<BookEvents.DescriptionChanged>(testEvent, transaction);
         }
         public async Task ChangeCategory(int category, EventsTransaction transaction = null)
         {
-            var testEvent = new BookEvents.ChangeCategory(category, DateTime.Now);
+            var testEvent = new BookEvents.CategoryChanged(category, DateTime.Now);
             await Apply(testEvent, transaction);
         }
         public async Task AddAuthor(int authorId, EventsTransaction transaction = null)
         {
-            var testEvent = new BookEvents.AddAuthor(authorId, DateTime.Now);
-            await Apply<BookEvents.AddAuthor>(testEvent, transaction);
+            var testEvent = new BookEvents.AuthorAdded(authorId, DateTime.Now);
+            await Apply<BookEvents.AuthorAdded>(testEvent, transaction);
         }
 
         public async Task RemoveAuthor(int authorId, EventsTransaction transaction = null)
         {
-            var testEvent = new BookEvents.RemoveAuthor(authorId, DateTime.Now);
+            var testEvent = new BookEvents.AuthorRemoved(authorId, DateTime.Now);
             await Apply(testEvent, transaction);
         }
         protected override async void OnEventsCommitted(BookState state, long position)

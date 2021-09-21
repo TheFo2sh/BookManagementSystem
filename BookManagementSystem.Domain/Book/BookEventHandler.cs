@@ -6,32 +6,32 @@ using BookManagementSystem.Infrastructure.Domain;
 namespace BookManagementSystem.Domain.Book
 {
     public class BookEventHandler : 
-        IEventsHandler<BookEvents.ChangeTitle, BookState>,
-        IEventsHandler<BookEvents.ChangeCategory, BookState>,
-        IEventsHandler<BookEvents.ChangeDescription, BookState>,
-        IEventsHandler<BookEvents.AddAuthor, BookState>,
-        IEventsHandler<BookEvents.RemoveAuthor, BookState>
+        IEventsHandler<BookEvents.TitleChanged, BookState>,
+        IEventsHandler<BookEvents.CategoryChanged, BookState>,
+        IEventsHandler<BookEvents.DescriptionChanged, BookState>,
+        IEventsHandler<BookEvents.AuthorAdded, BookState>,
+        IEventsHandler<BookEvents.AuthorRemoved, BookState>
 
     {
-        public Task<BookState> Handle(BookEvents.ChangeTitle request, BookState state, CancellationToken cancellationToken)
+        public Task<BookState> Handle(BookEvents.TitleChanged request, BookState state, CancellationToken cancellationToken)
         {
             var newState = state with { Title = request.Title };
             return Task.FromResult(newState);
         }
 
-        public  Task<BookState> Handle(BookEvents.ChangeCategory request, BookState state, CancellationToken cancellationToken)
+        public  Task<BookState> Handle(BookEvents.CategoryChanged request, BookState state, CancellationToken cancellationToken)
         {
             var newState = state with { CategoryId = request.CategoryId };
             return Task.FromResult(newState);
         }
 
-        public  Task<BookState> Handle(BookEvents.ChangeDescription request, BookState state, CancellationToken cancellationToken)
+        public  Task<BookState> Handle(BookEvents.DescriptionChanged request, BookState state, CancellationToken cancellationToken)
         {
             var newState = state with { Description = request.Description };
             return Task.FromResult(newState);
         }
 
-        public Task<BookState> Handle(BookEvents.AddAuthor request, BookState state, CancellationToken cancellationToken)
+        public Task<BookState> Handle(BookEvents.AuthorAdded request, BookState state, CancellationToken cancellationToken)
         {
             if (state.AuthorsId.Contains(request.AuthorId))
             {
@@ -41,7 +41,7 @@ namespace BookManagementSystem.Domain.Book
             return Task.FromResult(newState);
         }
 
-        public Task<BookState> Handle(BookEvents.RemoveAuthor request, BookState state, CancellationToken cancellationToken)
+        public Task<BookState> Handle(BookEvents.AuthorRemoved request, BookState state, CancellationToken cancellationToken)
         {
             if (!state.AuthorsId.Contains(request.AuthorId))
             {
