@@ -73,7 +73,9 @@ namespace BookManagementSystem.Controllers
         [Route("")]
         public async Task<IEnumerable<BookViewModel>> GetAll(int? page, int? pageSize)
         {
-            var books = _repository.All();
+            IQueryable<BookEntity> books = _repository
+                .All()
+                .OrderByDescending(item => item.CreatedTime);
             if (page != null)
             {
                 var skipped = (page.Value - 1) * pageSize.GetValueOrDefault(10);
@@ -81,7 +83,6 @@ namespace BookManagementSystem.Controllers
             }
 
             var bookViewModel = await books
-                .OrderBy(item => item.CreatedTime)
                 .Select(bookEntity => new BookViewModel()
                 {
                     Id = bookEntity.Id,
