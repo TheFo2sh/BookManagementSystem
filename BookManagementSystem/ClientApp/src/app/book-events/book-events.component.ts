@@ -18,11 +18,11 @@ export class BookEventsComponent implements OnInit {
   event: string;
   filter={event:null};
   eventsTypes=[
-                {id:'ChangeTitle',description:'Title Changed'},
-                {id:'ChangeDescription',description:'Description Changed'},
-                {id:'ChangeCategory',description:'Category Changed'},
-                {id:'AddAuthor',description:'Author Added'},
-                {id:'RemoveAuthor',description:'Author Removed'}];
+                {id:'TitleChanged',description:'Title Changed'},
+                {id:'DescriptionChanged',description:'Description Changed'},
+                {id:'CategoryChanged',description:'Category Changed'},
+                {id:'AuthorAdded',description:'Author Added'},
+                {id:'AuthorRemoved',description:'Author Removed'}];
   constructor(http: HttpClient, activatedRoute: ActivatedRoute, @Inject('BASE_URL') baseUrl: string) {
     this.http=http;
     this.baseUrl=baseUrl;
