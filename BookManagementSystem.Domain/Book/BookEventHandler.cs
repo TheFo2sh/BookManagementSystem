@@ -21,7 +21,7 @@ namespace BookManagementSystem.Domain.Book
 
         public  Task<BookState> Handle(BookEvents.CategoryChanged request, BookState state, CancellationToken cancellationToken)
         {
-            var newState = state with { CategoryId = request.CategoryId };
+            var newState = state with { CategoryId = request.CategoryId.Value };
             return Task.FromResult(newState);
         }
 
@@ -33,21 +33,21 @@ namespace BookManagementSystem.Domain.Book
 
         public Task<BookState> Handle(BookEvents.AuthorAdded request, BookState state, CancellationToken cancellationToken)
         {
-            if (state.AuthorsId.Contains(request.AuthorId))
+            if (state.AuthorsId.Contains(request.AuthorId.Value))
             {
                 return Task.FromResult(state);
             }
-            var newState = state with { AuthorsId = state.AuthorsId.Add(request.AuthorId) };
+            var newState = state with { AuthorsId = state.AuthorsId.Add(request.AuthorId.Value) };
             return Task.FromResult(newState);
         }
 
         public Task<BookState> Handle(BookEvents.AuthorRemoved request, BookState state, CancellationToken cancellationToken)
         {
-            if (!state.AuthorsId.Contains(request.AuthorId))
+            if (!state.AuthorsId.Contains(request.AuthorId.Value))
             {
                 return Task.FromResult(state);
             }
-            var newState = state with { AuthorsId = state.AuthorsId.Remove(request.AuthorId) };
+            var newState = state with { AuthorsId = state.AuthorsId.Remove(request.AuthorId.Value) };
             return Task.FromResult(newState);
         }
     }

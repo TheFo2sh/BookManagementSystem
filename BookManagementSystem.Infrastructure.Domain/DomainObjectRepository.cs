@@ -8,8 +8,18 @@ using MediatR;
 
 namespace BookManagementSystem.Infrastructure.Domain
 {
+    public static class Factory
+    {
+        public static  IServiceProvider ServiceProvider { get; private set; }
+
+        public static void SetServiceProvider(IServiceProvider serviceProvider)
+        {
+            ServiceProvider = serviceProvider;
+        }
+    }
     public class DomainObjectRepository<T, TEventsHandler, TState> where T:BaseDomainObject<TEventsHandler, TState> where TEventsHandler : new()
     {
+        
         private readonly IEventsRepository _eventsRepository;
         private readonly IMediator  _mediator;
         public DomainObjectRepository(IEventsRepository eventsRepository, IMediator mediator)
@@ -20,7 +30,7 @@ namespace BookManagementSystem.Infrastructure.Domain
 
         public async Task<T> GetAsync(string aggregateId)
         {
-            var aggregate = (T) Activator.CreateInstance(typeof(T), aggregateId, _eventsRepository, _mediator);
+            var aggregate = (T) Microsoft.Extensions.DependencyInjection.ActivatorUtilities.CreateInstance(Factory.ServiceProvider, typeof(T), aggregateId, _eventsRepository, _mediator);
             var events = _eventsRepository.GetEvents(typeof(T).Name, aggregateId);
             await events.ForEachAsync(async evt =>
             {

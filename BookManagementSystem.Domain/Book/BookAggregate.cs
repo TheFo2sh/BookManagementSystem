@@ -1,16 +1,22 @@
 ﻿using System;
 using System.Collections.Immutable;
 using System.Threading.Tasks;
+using BookManagementSystem.Domain.ValueObjects;
 using BookManagementSystem.Infrastructure.Domain;
 using MediatR;
+using ValueOf;
 
 namespace BookManagementSystem.Domain.Book
 {
     public class BookAggregate : BaseDomainObject<BookEventHandler, BookState>
     {
-        public BookAggregate(string bookId, IEventsRepository eventStoreService,IMediator mediator)
+        private readonly ICategoryValidator _categoryValidator;
+        private readonly IAuthorValidator _authorValidator;
+        public BookAggregate(string bookId, IEventsRepository eventStoreService,IMediator mediator, ICategoryValidator categoryValidator, IAuthorValidator authorValidator)
             : base(bookId, new BookState(bookId, AuthorsId: ImmutableList<int>.Empty), eventStoreService, mediator)
         {
+            _categoryValidator = categoryValidator;
+            _authorValidator = authorValidator;
         }
 
         public async Task ChangeTitle(string title,EventsTransaction transaction=null)
@@ -21,17 +27,18 @@ namespace BookManagementSystem.Domain.Book
         public async Task ChangeDescription(string description, EventsTransaction transaction = null)
         {
             var testEvent = new BookEvents.DescriptionChanged(description, DateTime.Now);
-            await Apply<BookEvents.DescriptionChanged>(testEvent, transaction);
+            await Apply(testEvent, transaction);
         }
-        public async Task ChangeCategory(int category, EventsTransaction transaction = null)
+        public async Task ChangeCategory(int categoryId, EventsTransaction transaction = null)
         {
+            var category = await ValueOf.Factory.CreateFromAsync<Category>(categoryId);
             var testEvent = new BookEvents.CategoryChanged(category, DateTime.Now);
             await Apply(testEvent, transaction);
         }
         public async Task AddAuthor(int authorId, EventsTransaction transaction = null)
         {
             var testEvent = new BookEvents.AuthorAdded(authorId, DateTime.Now);
-            await Apply<BookEvents.AuthorAdded>(testEvent, transaction);
+            await Apply(testEvent, transaction);
         }
 
         public async Task RemoveAuthor(int authorId, EventsTransaction transaction = null)

@@ -3,6 +3,8 @@ using System.Linq;
 using System.Net;
 using System.Reflection;
 using Autofac;
+using Autofac.Core;
+using Autofac.Core.Lifetime;
 using BookManagementSystem.Domain.Book;
 using BookManagementSystem.Factories;
 using BookManagementSystem.Infrastructure.Domain;
@@ -56,15 +58,17 @@ namespace BookManagementSystem
             builder.RegisterType<BookCommandsValidator>().AsImplementedInterfaces();
             builder.RegisterType<ReadModelUpdateService>().AsImplementedInterfaces();
             builder.RegisterType<Mediator>().As<IMediator>().InstancePerLifetimeScope();
+            builder.RegisterType<ValueObjectsValidator>().AsImplementedInterfaces();
 
             builder.RegisterType<ApplicationDbContext>().AsSelf().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<UnitOfWork>().AsSelf().AsImplementedInterfaces().ExternallyOwned();
             builder.RegisterGeneric(typeof(ReadDatabaseRepository<,>)).As(typeof(IReadDatabaseRepository<,>)).InstancePerLifetimeScope();
-
-
+            
+            
             builder.Register<ServiceFactory>(context =>
             {
                 var c = context.Resolve<IComponentContext>();
+
                 return t =>
                 {
                     var resolve = c.Resolve(t);

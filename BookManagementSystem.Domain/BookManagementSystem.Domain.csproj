@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BookManagementSystem.Infrastructure.Domain\BookManagementSystem.Infrastructure.Domain.csproj" />
+    <ProjectReference Include="..\ValueOf\ValueOf.csproj" />
   </ItemGroup>
 
 </Project>

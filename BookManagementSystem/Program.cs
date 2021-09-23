@@ -14,7 +14,10 @@ namespace BookManagementSystem
     {
         public static void Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
+            var host = CreateHostBuilder(args).Build();
+            ValueOf.Factory.SetServiceProvider(host.Services);
+            Infrastructure.Domain.Factory.SetServiceProvider(host.Services);
+            host.Run();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
